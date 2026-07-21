@@ -20,6 +20,10 @@ import { useEffect } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import MainLayout from './components/layout/main-layout/MainLayout'
 import DemoRoleProvider from './context/DemoRoleContext'
+import ElementDetailsPage from './features/catalog/ElementDetailsPage'
+import ElementListPage from './features/catalog/ElementListPage'
+import PurposeDetailsPage from './features/catalog/PurposeDetailsPage'
+import PurposeListPage from './features/catalog/PurposeListPage'
 import ConsentDetailsPage from './features/consent-registry/ConsentDetailsPage'
 import ConsentRegistryPage from './features/consent-registry/ConsentRegistryPage'
 import DashboardPage from './features/dashboard/DashboardPage'
@@ -54,6 +58,10 @@ function App(): React.JSX.Element {
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/consents" element={<ConsentRegistryPage />} />
             <Route path="/consents/:id" element={<ConsentDetailsPage />} />
+            <Route path="/purposes" element={<PurposeListPage />} />
+            <Route path="/purposes/:id" element={<PurposeDetailsPage />} />
+            <Route path="/elements" element={<ElementListPage />} />
+            <Route path="/elements/:id" element={<ElementDetailsPage />} />
             <Route path="/grievances" element={<GrievanceListPage />} />
             <Route path="/grievances/:id" element={<GrievanceDetailPage />} />
             <Route path="/grievance-management" element={<GrievanceQueuePage />} />

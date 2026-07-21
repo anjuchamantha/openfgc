@@ -41,6 +41,8 @@ function buildBreadcrumbItems(
   consentsLabel: string,
   myGrievancesLabel: string,
   grievanceQueueLabel: string,
+  purposesLabel: string,
+  elementsLabel: string,
 ): BreadcrumbItem[] {
   const consentDetailsMatch = pathname.match(/^\/consents\/([^/]+)$/)
 
@@ -105,6 +107,39 @@ function buildBreadcrumbItems(
     ]
   }
 
+  const catalogDetailsMatch = pathname.match(/^\/(purposes|elements)\/([^/]+)$/)
+
+  if (catalogDetailsMatch) {
+    const section = catalogDetailsMatch[1]
+    return [
+      { label: homeLabel, path: '/dashboard', isCurrent: false },
+      {
+        label: section === 'purposes' ? purposesLabel : elementsLabel,
+        path: `/${section}`,
+        isCurrent: false,
+      },
+      {
+        label: safeDecodeURIComponent(catalogDetailsMatch[2]),
+        path: pathname,
+        isCurrent: true,
+      },
+    ]
+  }
+
+  if (pathname.startsWith('/purposes')) {
+    return [
+      { label: homeLabel, path: '/dashboard', isCurrent: false },
+      { label: purposesLabel, path: '/purposes', isCurrent: true },
+    ]
+  }
+
+  if (pathname.startsWith('/elements')) {
+    return [
+      { label: homeLabel, path: '/dashboard', isCurrent: false },
+      { label: elementsLabel, path: '/elements', isCurrent: true },
+    ]
+  }
+
   return [
     {
       label: homeLabel,
@@ -124,6 +159,8 @@ function HeaderBreadcrumbs(): React.JSX.Element {
     t('sidebar.allConsents'),
     t('sidebar.myGrievances'),
     t('sidebar.grievanceQueue'),
+    t('sidebar.purposes'),
+    t('sidebar.elements'),
   )
 
   return (

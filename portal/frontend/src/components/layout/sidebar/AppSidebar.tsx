@@ -17,7 +17,15 @@
  */
 
 import { Sidebar } from '@wso2/oxygen-ui'
-import { Clock3, FileWarning, House, ListChecks, ShieldCheck } from '@wso2/oxygen-ui-icons-react'
+import {
+  Blocks,
+  Clock3,
+  FileWarning,
+  House,
+  ListChecks,
+  ShieldCheck,
+  Target,
+} from '@wso2/oxygen-ui-icons-react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useDemoRole } from '../../../hooks/useDemoRole'
@@ -75,11 +83,27 @@ const GRIEVANCE_MANAGEMENT_ITEMS: SidebarItem[] = [
   },
 ]
 
+const CATALOG_ITEMS: SidebarItem[] = [
+  {
+    id: 'purposes',
+    labelKey: 'sidebar.purposes',
+    path: '/purposes',
+    icon: <Target size={18} />,
+  },
+  {
+    id: 'elements',
+    labelKey: 'sidebar.elements',
+    path: '/elements',
+    icon: <Blocks size={18} />,
+  },
+]
+
 const SIDEBAR_ITEMS: SidebarItem[] = [
   ...DASHBOARD_ITEMS,
   ...CONSENT_ITEMS,
   ...GRIEVANCE_ITEMS,
   ...GRIEVANCE_MANAGEMENT_ITEMS,
+  ...CATALOG_ITEMS,
 ]
 
 function mapPathToMenuId(pathname: string, search: string): string {
@@ -103,6 +127,14 @@ function mapPathToMenuId(pathname: string, search: string): string {
 
   if (pathname.startsWith('/grievance-management')) {
     return 'grievance-queue'
+  }
+
+  if (pathname.startsWith('/purposes')) {
+    return 'purposes'
+  }
+
+  if (pathname.startsWith('/elements')) {
+    return 'elements'
   }
 
   return 'dashboard'
@@ -172,6 +204,16 @@ function AppSidebar({ collapsed }: AppSidebarProps): React.JSX.Element {
             ))}
           </Sidebar.Category>
         ) : null}
+
+        <Sidebar.Category>
+          <Sidebar.CategoryLabel>{t('sidebar.catalog')}</Sidebar.CategoryLabel>
+          {CATALOG_ITEMS.map((item) => (
+            <Sidebar.Item key={item.id} id={item.id}>
+              <Sidebar.ItemIcon>{item.icon}</Sidebar.ItemIcon>
+              <Sidebar.ItemLabel>{t(item.labelKey)}</Sidebar.ItemLabel>
+            </Sidebar.Item>
+          ))}
+        </Sidebar.Category>
       </Sidebar.Nav>
     </Sidebar>
   )
