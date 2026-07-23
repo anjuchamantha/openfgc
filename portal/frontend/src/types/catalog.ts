@@ -74,23 +74,12 @@ export interface ElementVersionCreateRequest {
 }
 
 export interface ElementBulkCreateResult {
-  index: number
   status: 'SUCCESS' | 'FAILED'
-  data?: ElementVersion
-  error?: {
-    code: string
-    message: string
-    description?: string
-  }
+  element?: ElementVersion
+  error?: string
 }
 
 export interface ElementBulkCreateResponse {
-  metadata: {
-    traceId: string
-    total: number
-    succeeded: number
-    failed: number
-  }
   results: ElementBulkCreateResult[]
 }
 
