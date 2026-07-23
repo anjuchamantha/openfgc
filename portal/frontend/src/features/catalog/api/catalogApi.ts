@@ -64,13 +64,11 @@ export async function createElement(payload: ElementCreateRequest): Promise<Elem
   })
   const result = response.results[0]
 
-  if (!result || result.status === 'FAILED' || !result.data) {
-    throw new Error(
-      result?.error?.description ?? result?.error?.message ?? 'Element creation failed',
-    )
+  if (!result || result.status === 'FAILED' || !result.element) {
+    throw new Error(result?.error ?? 'Element creation failed')
   }
 
-  return result.data
+  return result.element
 }
 
 export function createElementVersion(
