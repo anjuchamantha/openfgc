@@ -28,6 +28,7 @@ import {
 } from '@wso2/oxygen-ui-icons-react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { useScopes } from '../../../context/ScopeContext'
 import { useDemoRole } from '../../../hooks/useDemoRole'
 
 interface AppSidebarProps {
@@ -50,20 +51,12 @@ const DASHBOARD_ITEMS: SidebarItem[] = [
   },
 ]
 
-const CONSENT_ITEMS: SidebarItem[] = [
-  {
-    id: 'all-consents',
-    labelKey: 'sidebar.allConsents',
-    path: '/consents',
-    icon: <ShieldCheck size={18} />,
-  },
-  {
-    id: 'pending-consents',
-    labelKey: 'sidebar.pendingConsents',
-    path: '/consents?status=Pending',
-    icon: <Clock3 size={18} />,
-  },
-]
+const PENDING_CONSENT_ITEM: SidebarItem = {
+  id: 'pending-consents',
+  labelKey: 'sidebar.pendingConsents',
+  path: '/consents?status=Pending',
+  icon: <Clock3 size={18} />,
+}
 
 const GRIEVANCE_ITEMS: SidebarItem[] = [
   {
@@ -83,28 +76,19 @@ const GRIEVANCE_MANAGEMENT_ITEMS: SidebarItem[] = [
   },
 ]
 
-const CATALOG_ITEMS: SidebarItem[] = [
-  {
-    id: 'purposes',
-    labelKey: 'sidebar.purposes',
-    path: '/purposes',
-    icon: <Target size={18} />,
-  },
-  {
-    id: 'elements',
-    labelKey: 'sidebar.elements',
-    path: '/elements',
-    icon: <Blocks size={18} />,
-  },
-]
+const PURPOSE_ITEM: SidebarItem = {
+  id: 'purposes',
+  labelKey: 'sidebar.purposes',
+  path: '/purposes',
+  icon: <Target size={18} />,
+}
 
-const SIDEBAR_ITEMS: SidebarItem[] = [
-  ...DASHBOARD_ITEMS,
-  ...CONSENT_ITEMS,
-  ...GRIEVANCE_ITEMS,
-  ...GRIEVANCE_MANAGEMENT_ITEMS,
-  ...CATALOG_ITEMS,
-]
+const ELEMENT_ITEM: SidebarItem = {
+  id: 'elements',
+  labelKey: 'sidebar.elements',
+  path: '/elements',
+  icon: <Blocks size={18} />,
+}
 
 function mapPathToMenuId(pathname: string, search: string): string {
   if (pathname.startsWith('/dashboard')) {
@@ -145,6 +129,27 @@ function AppSidebar({ collapsed }: AppSidebarProps): React.JSX.Element {
   const navigate = useNavigate()
   const location = useLocation()
   const { role } = useDemoRole()
+  const { isAdmin, canReadPurposes, canReadElements } = useScopes()
+
+  const consentItem: SidebarItem = {
+    id: 'all-consents',
+    labelKey: isAdmin ? 'sidebar.allConsents' : 'sidebar.myConsents',
+    path: '/consents',
+    icon: <ShieldCheck size={18} />,
+  }
+
+  const consentItems: SidebarItem[] = [consentItem, PENDING_CONSENT_ITEM]
+  const catalogItems: SidebarItem[] = [
+    ...(canReadPurposes ? [PURPOSE_ITEM] : []),
+    ...(canReadElements ? [ELEMENT_ITEM] : []),
+  ]
+  const allItems: SidebarItem[] = [
+    ...DASHBOARD_ITEMS,
+    ...consentItems,
+    ...GRIEVANCE_ITEMS,
+    ...GRIEVANCE_MANAGEMENT_ITEMS,
+    ...catalogItems,
+  ]
 
   const activeItem = mapPathToMenuId(location.pathname, location.search)
 
@@ -153,8 +158,7 @@ function AppSidebar({ collapsed }: AppSidebarProps): React.JSX.Element {
       collapsed={collapsed}
       activeItem={activeItem}
       onSelect={(id) => {
-        const selectedItem = SIDEBAR_ITEMS.find((item) => item.id === id)
-
+        const selectedItem = allItems.find((item) => item.id === id)
         if (selectedItem) {
           navigate(selectedItem.path)
         }
@@ -173,7 +177,7 @@ function AppSidebar({ collapsed }: AppSidebarProps): React.JSX.Element {
 
         <Sidebar.Category>
           <Sidebar.CategoryLabel>{t('sidebar.consent')}</Sidebar.CategoryLabel>
-          {CONSENT_ITEMS.map((item) => (
+          {consentItems.map((item) => (
             <Sidebar.Item key={item.id} id={item.id}>
               <Sidebar.ItemIcon>{item.icon}</Sidebar.ItemIcon>
               <Sidebar.ItemLabel>{t(item.labelKey)}</Sidebar.ItemLabel>
@@ -205,15 +209,17 @@ function AppSidebar({ collapsed }: AppSidebarProps): React.JSX.Element {
           </Sidebar.Category>
         ) : null}
 
-        <Sidebar.Category>
-          <Sidebar.CategoryLabel>{t('sidebar.catalog')}</Sidebar.CategoryLabel>
-          {CATALOG_ITEMS.map((item) => (
-            <Sidebar.Item key={item.id} id={item.id}>
-              <Sidebar.ItemIcon>{item.icon}</Sidebar.ItemIcon>
-              <Sidebar.ItemLabel>{t(item.labelKey)}</Sidebar.ItemLabel>
-            </Sidebar.Item>
-          ))}
-        </Sidebar.Category>
+        {catalogItems.length > 0 && (
+          <Sidebar.Category>
+            <Sidebar.CategoryLabel>{t('sidebar.catalog')}</Sidebar.CategoryLabel>
+            {catalogItems.map((item) => (
+              <Sidebar.Item key={item.id} id={item.id}>
+                <Sidebar.ItemIcon>{item.icon}</Sidebar.ItemIcon>
+                <Sidebar.ItemLabel>{t(item.labelKey)}</Sidebar.ItemLabel>
+              </Sidebar.Item>
+            ))}
+          </Sidebar.Category>
+        )}
       </Sidebar.Nav>
     </Sidebar>
   )

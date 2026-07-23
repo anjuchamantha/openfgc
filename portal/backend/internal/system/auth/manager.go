@@ -103,6 +103,7 @@ func (m *Manager) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("GET /auth/callback", m.Callback)
 	mux.HandleFunc("POST /auth/refresh", m.Refresh)
 	mux.Handle("POST /auth/logout", m.Require(http.HandlerFunc(m.Logout)))
+	mux.Handle("GET /auth/userinfo", m.Require(http.HandlerFunc(m.UserInfo)))
 }
 
 // Require authenticates a request and optionally enforces scopes.

@@ -39,6 +39,7 @@ const DEFAULT_FILTERS: ConsentRegistryFiltersModel = {
   startDate: '',
   endDate: '',
   consentType: '',
+  userId: '',
 }
 
 const FILTER_STATUS_VALUES: ConsentRegistryFiltersModel['status'][] = [
@@ -65,6 +66,7 @@ function getFiltersFromSearchParams(searchParams: URLSearchParams): ConsentRegis
     startDate: searchParams.get('startDate') ?? DEFAULT_FILTERS.startDate,
     endDate: searchParams.get('endDate') ?? DEFAULT_FILTERS.endDate,
     consentType: searchParams.get('consentType') ?? DEFAULT_FILTERS.consentType,
+    userId: searchParams.get('userId') ?? DEFAULT_FILTERS.userId,
   }
 }
 
@@ -111,6 +113,10 @@ function toSearchParams(
 
   if (filters.consentType.trim()) {
     params.set('consentType', filters.consentType.trim())
+  }
+
+  if (filters.userId?.trim()) {
+    params.set('userId', filters.userId.trim())
   }
 
   if (page !== DEFAULT_PAGE) {

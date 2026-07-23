@@ -17,6 +17,8 @@ import (
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"golang.org/x/oauth2"
+
+	systemcontext "github.com/wso2/openfgc/portal/backend/internal/system/context"
 )
 
 type errorResponse struct {
@@ -197,6 +199,25 @@ func (m *Manager) Logout(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(map[string]string{"logoutUrl": logoutURL})
+}
+
+// UserInfo returns the authenticated principal's identity and granted scopes.
+func (m *Manager) UserInfo(w http.ResponseWriter, r *http.Request) {
+	principal, ok := systemcontext.PrincipalFromContext(r.Context())
+	if !ok {
+		writeError(w, http.StatusUnauthorized, "UNAUTHORIZED", "authentication required")
+		return
+	}
+	scopes := make([]string, 0, len(principal.Scopes))
+	for scope := range principal.Scopes {
+		scopes = append(scopes, scope)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(map[string]any{
+		"userId": principal.UserID,
+		"orgId":  principal.OrgID,
+		"scopes": scopes,
+	})
 }
 
 func (m *Manager) callbackFailure(w http.ResponseWriter, r *http.Request, reason string) {
