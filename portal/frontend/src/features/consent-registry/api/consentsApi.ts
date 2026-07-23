@@ -40,9 +40,35 @@ export async function fetchMyConsents(
   })
 }
 
+export async function fetchAllConsents(
+  params: ConsentListQueryParams,
+): Promise<ConsentSearchResponse> {
+  return apiRequest<ConsentSearchResponse>('/api/consents', {
+    method: 'GET',
+    query: {
+      consentStatuses: params.consentStatuses,
+      consentTypes: params.consentTypes,
+      fromTime: params.fromTime,
+      toTime: params.toTime,
+      userIds: params.userId,
+      limit: params.limit,
+      offset: params.offset,
+    },
+  })
+}
+
 export async function fetchMyConsentByID(consentID: string): Promise<ConsentDetailAPI> {
   return apiRequest<ConsentDetailAPI>(`/me/consents/${encodeURIComponent(consentID)}`, {
     method: 'GET',
+  })
+}
+
+export async function fetchConsentByID(consentID: string): Promise<ConsentDetailAPI> {
+  return apiRequest<ConsentDetailAPI>(`/api/consents/${encodeURIComponent(consentID)}`, {
+    method: 'GET',
+    query: {
+      details: true,
+    },
   })
 }
 
