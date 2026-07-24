@@ -27,7 +27,6 @@ import {
   TextField,
 } from '@wso2/oxygen-ui'
 import { useTranslation } from 'react-i18next'
-import { useScopes } from '../../../context/ScopeContext'
 import type { ConsentRegistryFilters as ConsentRegistryFiltersModel } from '../../../types/consent'
 
 interface ConsentRegistryFiltersProps {
@@ -42,7 +41,6 @@ function ConsentRegistryFilters({
   onClear,
 }: ConsentRegistryFiltersProps): React.JSX.Element {
   const { t } = useTranslation('common')
-  const { isAdmin } = useScopes()
 
   return (
     <Box
@@ -148,21 +146,6 @@ function ConsentRegistryFilters({
           }}
           sx={{ width: { xs: '100%', lg: 'auto' }, flex: { lg: 1 }, minWidth: { lg: 180 } }}
         />
-
-        {isAdmin && (
-          <TextField
-            label={t('consentRegistry.filters.userId')}
-            size="small"
-            value={filters.userId ?? ''}
-            onChange={(event) => {
-              onFilterChange({
-                ...filters,
-                userId: event.target.value,
-              })
-            }}
-            sx={{ width: { xs: '100%', lg: 'auto' }, flex: { lg: 1 }, minWidth: { lg: 180 } }}
-          />
-        )}
 
         <Button
           variant="text"

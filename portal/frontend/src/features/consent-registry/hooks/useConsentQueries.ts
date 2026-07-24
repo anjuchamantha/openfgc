@@ -28,8 +28,6 @@ import {
 import { useEffect } from 'react'
 import {
   approveMyConsent,
-  fetchAllConsents,
-  fetchConsentByID,
   fetchMyConsentByID,
   fetchMyConsents,
   revokeMyConsent,
@@ -52,7 +50,6 @@ import {
   toEpochMilliseconds,
   toStartOfDayEpochMilliseconds,
 } from '../../../utils/dateTime'
-import { useScopes } from '../../../context/ScopeContext'
 
 interface ConsentListResult {
   rows: ConsentRecord[]
@@ -82,7 +79,6 @@ function toListParams(
     consentTypes: filters.consentType.trim() || undefined,
     fromTime: toStartOfDayEpochMilliseconds(filters.startDate),
     toTime: toEndOfDayEpochMilliseconds(filters.endDate),
-    userId: filters.userId?.trim() || undefined,
     limit: rowsPerPage,
     offset: page * rowsPerPage,
   }
@@ -112,15 +108,13 @@ function consentListQueryOptions(
   filters: ConsentRegistryFilters,
   page: number,
   rowsPerPage: number,
-  isAdmin: boolean,
 ) {
   const params = toListParams(filters, page, rowsPerPage)
-  const fetchFn = isAdmin ? fetchAllConsents : fetchMyConsents
 
   return queryOptions({
-    queryKey: ['consents', isAdmin ? 'all' : 'mine', params],
+    queryKey: ['consents', params],
     queryFn: async (): Promise<ConsentListResult> => {
-      const response = await fetchFn(params)
+      const response = await fetchMyConsents(params)
       return {
         rows: response.data.map(toConsentRow),
         total: response.metadata.total,
@@ -135,9 +129,8 @@ export function useConsentListQuery(
   page: number,
   rowsPerPage: number,
 ): UseQueryResult<ConsentListResult> {
-  const { isAdmin } = useScopes()
   const queryClient = useQueryClient()
-  const query = useQuery(consentListQueryOptions(filters, page, rowsPerPage, isAdmin))
+  const query = useQuery(consentListQueryOptions(filters, page, rowsPerPage))
 
   useEffect(() => {
     const nextPage = page + 1
@@ -145,10 +138,10 @@ export function useConsentListQuery(
 
     if (!query.isPlaceholderData && hasNextPage) {
       queryClient
-        .prefetchQuery(consentListQueryOptions(filters, nextPage, rowsPerPage, isAdmin))
+        .prefetchQuery(consentListQueryOptions(filters, nextPage, rowsPerPage))
         .catch(() => undefined)
     }
-  }, [filters, isAdmin, page, query.data?.total, query.isPlaceholderData, queryClient, rowsPerPage])
+  }, [filters, page, query.data?.total, query.isPlaceholderData, queryClient, rowsPerPage])
 
   return query
 }
@@ -156,12 +149,9 @@ export function useConsentListQuery(
 export function useConsentDetailQuery(
   consentID: string | undefined,
 ): UseQueryResult<ConsentDetailAPI> {
-  const { isAdmin } = useScopes()
-
   return useQuery<ConsentDetailAPI>({
-    queryKey: ['consent', isAdmin ? 'all' : 'mine', consentID],
-    queryFn: async (): Promise<ConsentDetailAPI> =>
-      isAdmin ? fetchConsentByID(String(consentID)) : fetchMyConsentByID(String(consentID)),
+    queryKey: ['consent', consentID],
+    queryFn: async (): Promise<ConsentDetailAPI> => fetchMyConsentByID(String(consentID)),
     enabled: Boolean(consentID),
   })
 }
@@ -181,10 +171,7 @@ export function useApproveConsentMutation(): UseMutationResult<
       approveMyConsent(consentID, selectedOptionalElements),
     onSuccess: async (_data, variables): Promise<void> => {
       await queryClient.invalidateQueries({ queryKey: ['consents'] })
-      await queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === 'consent' && query.queryKey.includes(variables.consentID),
-      })
+      await queryClient.invalidateQueries({ queryKey: ['consent', variables.consentID] })
     },
   })
 }
@@ -196,9 +183,7 @@ export function useRevokeConsentMutation(): UseMutationResult<unknown, Error, st
     mutationFn: async (consentID: string): Promise<unknown> => revokeMyConsent(consentID),
     onSuccess: async (_data, consentID): Promise<void> => {
       await queryClient.invalidateQueries({ queryKey: ['consents'] })
-      await queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === 'consent' && query.queryKey.includes(consentID),
-      })
+      await queryClient.invalidateQueries({ queryKey: ['consent', consentID] })
     },
   })
 }

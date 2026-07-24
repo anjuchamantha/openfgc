@@ -43,7 +43,6 @@ export interface ConsentRegistryFilters {
   startDate: string
   endDate: string
   consentType: string
-  userId?: string
 }
 
 export interface ConsentListQueryParams {
@@ -53,7 +52,6 @@ export interface ConsentListQueryParams {
   toTime?: number
   limit: number
   offset: number
-  userId?: string
 }
 
 export interface ConsentElementApprovalItem {
