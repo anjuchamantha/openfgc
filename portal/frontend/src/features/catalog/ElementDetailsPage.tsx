@@ -165,9 +165,7 @@ function ElementDetailsPage(): React.JSX.Element {
                       sx={{ cursor: 'pointer' }}
                       onClick={() => setSelectedVersion(version.version)}
                     >
-                      <TableCell>
-                        <Chip size="small" color="primary" label={version.version} />
-                      </TableCell>
+                      <TableCell>{version.version}</TableCell>
                       <TableCell>{version.displayName ?? '-'}</TableCell>
                       <TableCell>{version.description ?? '-'}</TableCell>
                       <TableCell>{formatEpochTimestamp(version.createdTime)}</TableCell>

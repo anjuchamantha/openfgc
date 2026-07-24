@@ -10,24 +10,16 @@ import type { PropertyEntry } from '../utils/formProperties'
 
 interface PropertyEditorProps {
   entries: PropertyEntry[]
-  embedded?: boolean
   onChange: (entries: PropertyEntry[]) => void
 }
 
-function PropertyEditor({ entries, embedded, onChange }: PropertyEditorProps): React.JSX.Element {
+function PropertyEditor({ entries, onChange }: PropertyEditorProps): React.JSX.Element {
   const { t } = useTranslation('common')
-  const isEmbedded = embedded ?? false
 
   return (
     <Stack spacing={1}>
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent={isEmbedded ? 'flex-end' : 'space-between'}
-      >
-        {!isEmbedded ? (
-          <Typography variant="subtitle2">{t('catalog.fields.properties')}</Typography>
-        ) : null}
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Typography variant="subtitle2">{t('catalog.fields.properties')}</Typography>
         <Button
           size="small"
           startIcon={<Plus size={16} />}
@@ -85,10 +77,6 @@ function PropertyEditor({ entries, embedded, onChange }: PropertyEditorProps): R
       ))}
     </Stack>
   )
-}
-
-PropertyEditor.defaultProps = {
-  embedded: false,
 }
 
 export default PropertyEditor
