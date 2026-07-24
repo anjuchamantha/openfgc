@@ -245,7 +245,6 @@ const commonEn = {
       elementVersionRequiresIdentity: 'Enter an element name or namespace first',
       organizationPurpose: 'Leave empty to create an organization-level purpose',
       purposeVersionRequiresName: 'Enter a purpose name first',
-      schemaElementTypes: 'Schemas are supported only for JSON and XML elements.',
     },
     values: {
       all: 'All',
@@ -299,7 +298,6 @@ const commonEn = {
     },
     details: {
       definition: 'Definition',
-      elementIdentity: 'Element identity',
       elements: 'Elements',
       identity: 'Purpose identity',
       overview: 'Overview',
@@ -320,7 +318,6 @@ const commonEn = {
       noElementsFound: 'No matching elements',
       noElements: 'No elements are configured for this version.',
       noProperties: 'No custom properties.',
-      noSchema: 'No schema is configured for this version.',
       noPurposeElements: 'No elements added yet. Add at least one element to create the purpose.',
       noVersions: 'No versions are available.',
       versionsLoadFailed: 'Unable to load version history right now.',

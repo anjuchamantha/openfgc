@@ -33,7 +33,6 @@ import HeaderBreadcrumbs from '../../components/layout/main-layout/HeaderBreadcr
 import type { ElementFilters, ElementType } from '../../types/catalog'
 import { formatEpochTimestamp } from '../../utils/dateTime'
 import ElementFormDialog from './components/ElementFormDialog'
-import ElementTypeChip from './components/ElementTypeChip'
 import { useCreateElementMutation, useElementsQuery } from './hooks/useCatalogQueries'
 
 const ROW_OPTIONS = [10, 25, 50]
@@ -458,7 +457,7 @@ function ElementListPage(): React.JSX.Element {
                         </Typography>
                       </TableCell>
                       <TableCell>
-                        <ElementTypeChip type={element.type} />
+                        <Chip size="small" variant="outlined" label={element.type} />
                       </TableCell>
                       <TableCell>
                         <Chip size="small" color="primary" label={element.version} />

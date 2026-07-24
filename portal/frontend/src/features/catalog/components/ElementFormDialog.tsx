@@ -4,7 +4,6 @@
  */
 
 import {
-  Box,
   Button,
   Dialog,
   DialogActions,
@@ -16,10 +15,8 @@ import {
   Select,
   Stack,
   TextField,
-  Tooltip,
   Typography,
 } from '@wso2/oxygen-ui'
-import { CircleHelp } from '@wso2/oxygen-ui-icons-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type {
@@ -100,32 +97,19 @@ function ElementFormDialog({
   return (
     <Dialog open={open} onClose={loading ? undefined : onClose} maxWidth="md" fullWidth>
       <DialogTitle>
-        <Stack direction="row" spacing={0.75} alignItems="center">
-          <Box component="span">
-            {versionMode ? t('catalog.elements.newVersion') : t('catalog.elements.createTitle')}
-          </Box>
+        {versionMode ? t('catalog.elements.newVersion') : t('catalog.elements.createTitle')}
+      </DialogTitle>
+      <DialogContent dividers>
+        <Stack spacing={2.5} sx={{ pt: 0.5 }}>
           {versionMode ? (
-            <Tooltip
-              arrow
-              title={t('catalog.messages.immutableElement', {
+            <Typography variant="body2" color="text.secondary">
+              {t('catalog.messages.immutableElement', {
                 name: initialValue?.name,
                 namespace: initialValue?.namespace,
                 type: initialValue?.type,
               })}
-            >
-              <Box
-                component="span"
-                sx={{ display: 'inline-flex', alignItems: 'center', color: 'text.disabled' }}
-              >
-                <CircleHelp size={16} />
-              </Box>
-            </Tooltip>
-          ) : null}
-        </Stack>
-      </DialogTitle>
-      <DialogContent dividers>
-        <Stack spacing={2.5} sx={{ pt: 0.5 }}>
-          {!versionMode ? (
+            </Typography>
+          ) : (
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               <TextField
                 required
@@ -144,26 +128,7 @@ function ElementFormDialog({
                 onChange={(event) => setNamespace(event.target.value)}
               />
               <FormControl fullWidth required>
-                <InputLabel id="element-type-label">
-                  <Box
-                    component="span"
-                    sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5 }}
-                  >
-                    {t('catalog.fields.type')}
-                    <Tooltip arrow title={t('catalog.help.schemaElementTypes')}>
-                      <Box
-                        component="span"
-                        sx={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          color: 'text.disabled',
-                        }}
-                      >
-                        <CircleHelp size={14} />
-                      </Box>
-                    </Tooltip>
-                  </Box>
-                </InputLabel>
+                <InputLabel id="element-type-label">{t('catalog.fields.type')}</InputLabel>
                 <Select
                   labelId="element-type-label"
                   value={type}
@@ -176,7 +141,7 @@ function ElementFormDialog({
                 </Select>
               </FormControl>
             </Stack>
-          ) : null}
+          )}
           <TextField
             fullWidth
             label={t('catalog.fields.displayName')}
