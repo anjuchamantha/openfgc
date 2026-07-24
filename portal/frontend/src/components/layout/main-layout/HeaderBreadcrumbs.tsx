@@ -39,21 +39,15 @@ function buildBreadcrumbItems(
   pathname: string,
   homeLabel: string,
   consentsLabel: string,
+  myGrievancesLabel: string,
+  grievanceQueueLabel: string,
 ): BreadcrumbItem[] {
   const consentDetailsMatch = pathname.match(/^\/consents\/([^/]+)$/)
 
   if (consentDetailsMatch) {
     return [
-      {
-        label: homeLabel,
-        path: '/dashboard',
-        isCurrent: false,
-      },
-      {
-        label: consentsLabel,
-        path: '/consents',
-        isCurrent: false,
-      },
+      { label: homeLabel, path: '/dashboard', isCurrent: false },
+      { label: consentsLabel, path: '/consents', isCurrent: false },
       {
         label: safeDecodeURIComponent(consentDetailsMatch[1]),
         path: pathname,
@@ -64,16 +58,50 @@ function buildBreadcrumbItems(
 
   if (pathname.startsWith('/consents')) {
     return [
+      { label: homeLabel, path: '/dashboard', isCurrent: false },
+      { label: consentsLabel, path: '/consents', isCurrent: true },
+    ]
+  }
+
+  const grievanceDetailsMatch = pathname.match(/^\/grievances\/([^/]+)$/)
+
+  if (grievanceDetailsMatch) {
+    return [
+      { label: homeLabel, path: '/dashboard', isCurrent: false },
+      { label: myGrievancesLabel, path: '/grievances', isCurrent: false },
       {
-        label: homeLabel,
-        path: '/dashboard',
-        isCurrent: false,
-      },
-      {
-        label: consentsLabel,
-        path: '/consents',
+        label: safeDecodeURIComponent(grievanceDetailsMatch[1]),
+        path: pathname,
         isCurrent: true,
       },
+    ]
+  }
+
+  if (pathname.startsWith('/grievances')) {
+    return [
+      { label: homeLabel, path: '/dashboard', isCurrent: false },
+      { label: myGrievancesLabel, path: '/grievances', isCurrent: true },
+    ]
+  }
+
+  const grievanceCaseMatch = pathname.match(/^\/grievance-management\/([^/]+)$/)
+
+  if (grievanceCaseMatch) {
+    return [
+      { label: homeLabel, path: '/dashboard', isCurrent: false },
+      { label: grievanceQueueLabel, path: '/grievance-management', isCurrent: false },
+      {
+        label: safeDecodeURIComponent(grievanceCaseMatch[1]),
+        path: pathname,
+        isCurrent: true,
+      },
+    ]
+  }
+
+  if (pathname.startsWith('/grievance-management')) {
+    return [
+      { label: homeLabel, path: '/dashboard', isCurrent: false },
+      { label: grievanceQueueLabel, path: '/grievance-management', isCurrent: true },
     ]
   }
 
@@ -94,6 +122,8 @@ function HeaderBreadcrumbs(): React.JSX.Element {
     location.pathname,
     t('layout.home'),
     t('sidebar.allConsents'),
+    t('sidebar.myGrievances'),
+    t('sidebar.grievanceQueue'),
   )
 
   return (

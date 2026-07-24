@@ -17,9 +17,10 @@
  */
 
 import { Sidebar } from '@wso2/oxygen-ui'
-import { Clock3, House, ShieldCheck } from '@wso2/oxygen-ui-icons-react'
+import { Clock3, FileWarning, House, ListChecks, ShieldCheck } from '@wso2/oxygen-ui-icons-react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { useDemoRole } from '../../../hooks/useDemoRole'
 
 interface AppSidebarProps {
   collapsed: boolean
@@ -56,7 +57,30 @@ const CONSENT_ITEMS: SidebarItem[] = [
   },
 ]
 
-const SIDEBAR_ITEMS: SidebarItem[] = [...DASHBOARD_ITEMS, ...CONSENT_ITEMS]
+const GRIEVANCE_ITEMS: SidebarItem[] = [
+  {
+    id: 'my-grievances',
+    labelKey: 'sidebar.myGrievances',
+    path: '/grievances',
+    icon: <FileWarning size={18} />,
+  },
+]
+
+const GRIEVANCE_MANAGEMENT_ITEMS: SidebarItem[] = [
+  {
+    id: 'grievance-queue',
+    labelKey: 'sidebar.grievanceQueue',
+    path: '/grievance-management',
+    icon: <ListChecks size={18} />,
+  },
+]
+
+const SIDEBAR_ITEMS: SidebarItem[] = [
+  ...DASHBOARD_ITEMS,
+  ...CONSENT_ITEMS,
+  ...GRIEVANCE_ITEMS,
+  ...GRIEVANCE_MANAGEMENT_ITEMS,
+]
 
 function mapPathToMenuId(pathname: string, search: string): string {
   if (pathname.startsWith('/dashboard')) {
@@ -73,6 +97,14 @@ function mapPathToMenuId(pathname: string, search: string): string {
     return 'all-consents'
   }
 
+  if (pathname.startsWith('/grievances')) {
+    return 'my-grievances'
+  }
+
+  if (pathname.startsWith('/grievance-management')) {
+    return 'grievance-queue'
+  }
+
   return 'dashboard'
 }
 
@@ -80,6 +112,7 @@ function AppSidebar({ collapsed }: AppSidebarProps): React.JSX.Element {
   const { t } = useTranslation('common')
   const navigate = useNavigate()
   const location = useLocation()
+  const { role } = useDemoRole()
 
   const activeItem = mapPathToMenuId(location.pathname, location.search)
 
@@ -115,6 +148,30 @@ function AppSidebar({ collapsed }: AppSidebarProps): React.JSX.Element {
             </Sidebar.Item>
           ))}
         </Sidebar.Category>
+
+        {role === 'dataPrincipal' ? (
+          <Sidebar.Category>
+            <Sidebar.CategoryLabel>{t('sidebar.grievances')}</Sidebar.CategoryLabel>
+            {GRIEVANCE_ITEMS.map((item) => (
+              <Sidebar.Item key={item.id} id={item.id}>
+                <Sidebar.ItemIcon>{item.icon}</Sidebar.ItemIcon>
+                <Sidebar.ItemLabel>{t(item.labelKey)}</Sidebar.ItemLabel>
+              </Sidebar.Item>
+            ))}
+          </Sidebar.Category>
+        ) : null}
+
+        {role === 'grievanceOfficer' ? (
+          <Sidebar.Category>
+            <Sidebar.CategoryLabel>{t('sidebar.grievanceManagement')}</Sidebar.CategoryLabel>
+            {GRIEVANCE_MANAGEMENT_ITEMS.map((item) => (
+              <Sidebar.Item key={item.id} id={item.id}>
+                <Sidebar.ItemIcon>{item.icon}</Sidebar.ItemIcon>
+                <Sidebar.ItemLabel>{t(item.labelKey)}</Sidebar.ItemLabel>
+              </Sidebar.Item>
+            ))}
+          </Sidebar.Category>
+        ) : null}
       </Sidebar.Nav>
     </Sidebar>
   )

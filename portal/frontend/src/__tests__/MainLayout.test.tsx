@@ -23,6 +23,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import HeaderBreadcrumbs from '../components/layout/main-layout/HeaderBreadcrumbs'
 import MainLayout from '../components/layout/main-layout/MainLayout'
+import DemoRoleProvider from '../context/DemoRoleContext'
 import i18n from '../i18n/i18n'
 
 interface MockSidebarProps {
@@ -44,13 +45,15 @@ function renderMainLayout(initialRoute = '/'): void {
     <OxygenUIThemeProvider theme={AcrylicOrangeTheme}>
       <CssBaseline />
       <I18nextProvider i18n={i18n}>
-        <MemoryRouter initialEntries={[initialRoute]}>
-          <Routes>
-            <Route path="/" element={<MainLayout />}>
-              <Route index element={<h1>Nested route content</h1>} />
-            </Route>
-          </Routes>
-        </MemoryRouter>
+        <DemoRoleProvider>
+          <MemoryRouter initialEntries={[initialRoute]}>
+            <Routes>
+              <Route path="/" element={<MainLayout />}>
+                <Route index element={<h1>Nested route content</h1>} />
+              </Route>
+            </Routes>
+          </MemoryRouter>
+        </DemoRoleProvider>
       </I18nextProvider>
     </OxygenUIThemeProvider>,
   )

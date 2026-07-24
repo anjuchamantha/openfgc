@@ -16,15 +16,33 @@
  * under the License.
  */
 
-import { AppShell, Box, ColorSchemeToggle, Header } from '@wso2/oxygen-ui'
+import {
+  AppShell,
+  Box,
+  ColorSchemeToggle,
+  Header,
+  Tooltip,
+  ToggleButton,
+  ToggleButtonGroup,
+} from '@wso2/oxygen-ui'
+import { ShieldCheck, User } from '@wso2/oxygen-ui-icons-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
+import type { DemoRole } from '../../../context/demoRole'
+import { useDemoRole } from '../../../hooks/useDemoRole'
 import AppSidebar from '../sidebar/AppSidebar'
 import UserProfileMenu from './UserProfileMenu'
 
+const DEMO_ROLE_HOME_PATH: Record<DemoRole, string> = {
+  dataPrincipal: '/grievances',
+  grievanceOfficer: '/grievance-management',
+}
+
 function MainLayout(): React.JSX.Element {
   const { t } = useTranslation('common')
+  const navigate = useNavigate()
+  const { role, setRole } = useDemoRole()
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false)
 
   return (
@@ -55,6 +73,36 @@ function MainLayout(): React.JSX.Element {
           </Header.Brand>
           <Header.Spacer />
           <Header.Actions>
+            <ToggleButtonGroup
+              size="small"
+              exclusive
+              value={role}
+              onChange={(_, nextRole: DemoRole | null) => {
+                if (nextRole && nextRole !== role) {
+                  setRole(nextRole)
+                  navigate(DEMO_ROLE_HOME_PATH[nextRole])
+                }
+              }}
+              aria-label={t('layout.demoRoleAriaLabel')}
+            >
+              <ToggleButton value="dataPrincipal" aria-label={t('layout.demoRoleDataPrincipal')}>
+                <Tooltip title={t('layout.demoRoleDataPrincipal')}>
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <User size={16} />
+                  </Box>
+                </Tooltip>
+              </ToggleButton>
+              <ToggleButton
+                value="grievanceOfficer"
+                aria-label={t('layout.demoRoleGrievanceOfficer')}
+              >
+                <Tooltip title={t('layout.demoRoleGrievanceOfficer')}>
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <ShieldCheck size={16} />
+                  </Box>
+                </Tooltip>
+              </ToggleButton>
+            </ToggleButtonGroup>
             <ColorSchemeToggle />
             <UserProfileMenu />
           </Header.Actions>

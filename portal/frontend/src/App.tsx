@@ -19,6 +19,7 @@
 import { useEffect } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import MainLayout from './components/layout/main-layout/MainLayout'
+import DemoRoleProvider from './context/DemoRoleContext'
 import ConsentDetailsPage from './features/consent-registry/ConsentDetailsPage'
 import ConsentRegistryPage from './features/consent-registry/ConsentRegistryPage'
 import DashboardPage from './features/dashboard/DashboardPage'
@@ -39,19 +40,29 @@ function AuthenticationGate({
 
   return authenticated ? children : null
 }
+import GrievanceCaseDetailPage from './features/grievance-management/GrievanceCaseDetailPage'
+import GrievanceQueuePage from './features/grievance-management/GrievanceQueuePage'
+import GrievanceDetailPage from './features/grievances/GrievanceDetailPage'
+import GrievanceListPage from './features/grievances/GrievanceListPage'
 
 function App(): React.JSX.Element {
   return (
-    <AuthenticationGate>
-      <Routes>
-        <Route element={<MainLayout />}>
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/consents" element={<ConsentRegistryPage />} />
-          <Route path="/consents/:id" element={<ConsentDetailsPage />} />
-          <Route path="*" element={<Navigate to="/consents" replace />} />
-        </Route>
-      </Routes>
-    </AuthenticationGate>
+    <DemoRoleProvider>
+      <AuthenticationGate>
+        <Routes>
+          <Route element={<MainLayout />}>
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/consents" element={<ConsentRegistryPage />} />
+            <Route path="/consents/:id" element={<ConsentDetailsPage />} />
+            <Route path="/grievances" element={<GrievanceListPage />} />
+            <Route path="/grievances/:id" element={<GrievanceDetailPage />} />
+            <Route path="/grievance-management" element={<GrievanceQueuePage />} />
+            <Route path="/grievance-management/:id" element={<GrievanceCaseDetailPage />} />
+            <Route path="*" element={<Navigate to="/consents" replace />} />
+          </Route>
+        </Routes>
+      </AuthenticationGate>
+    </DemoRoleProvider>
   )
 }
 
