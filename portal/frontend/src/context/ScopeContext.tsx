@@ -15,6 +15,8 @@ const SCOPE_ELEMENTS_WRITE = 'portal:elements:write'
 const SCOPE_PURPOSES_READ = 'portal:purposes:read'
 const SCOPE_PURPOSES_WRITE = 'portal:purposes:write'
 const SCOPE_GRIEVANCES_MANAGE = 'portal:grievances:manage'
+const SCOPE_GRIEVANCES_READ_SELF = 'portal:grievances:read:self'
+const SCOPE_GRIEVANCES_WRITE_SELF = 'portal:grievances:write:self'
 
 export const ALL_SCOPES = [
   SCOPE_CONSENTS_READ_ANY,
@@ -26,6 +28,8 @@ export const ALL_SCOPES = [
   SCOPE_PURPOSES_READ,
   SCOPE_PURPOSES_WRITE,
   SCOPE_GRIEVANCES_MANAGE,
+  SCOPE_GRIEVANCES_READ_SELF,
+  SCOPE_GRIEVANCES_WRITE_SELF,
 ]
 
 interface UserInfo {
@@ -43,6 +47,7 @@ interface ScopeContextValue {
   canReadPurposes: boolean
   canWritePurposes: boolean
   isGrievanceOfficer: boolean
+  canReadGrievancesSelf: boolean
   isLoading: boolean
 }
 
@@ -105,6 +110,7 @@ export function ScopeProvider({ children }: { children: React.ReactNode }): Reac
     canReadPurposes: scopes.has(SCOPE_PURPOSES_READ),
     canWritePurposes: scopes.has(SCOPE_PURPOSES_WRITE),
     isGrievanceOfficer: scopes.has(SCOPE_GRIEVANCES_MANAGE),
+    canReadGrievancesSelf: scopes.has(SCOPE_GRIEVANCES_READ_SELF),
     isLoading,
   }
 

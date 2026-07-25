@@ -69,8 +69,17 @@ function ScopeGuard({
 }
 
 function AppRoutes(): React.JSX.Element {
-  const { canReadElements, canReadPurposes } = useScopes()
+  const { canReadElements, canReadPurposes, canReadGrievancesSelf } = useScopes()
   const { role } = useDemoRole()
+
+  const canAccessGrievances = role === 'dataPrincipal' && canReadGrievancesSelf
+  const canAccessGrievanceManagement = role === 'grievanceOfficer'
+  const grievancesRedirect = canAccessGrievanceManagement
+    ? ROLE_HOME_PATH.grievanceOfficer
+    : '/consents'
+  const grievanceManagementRedirect = canAccessGrievances
+    ? ROLE_HOME_PATH.dataPrincipal
+    : '/consents'
 
   return (
     <Routes>
@@ -113,7 +122,7 @@ function AppRoutes(): React.JSX.Element {
         <Route
           path="/grievances"
           element={
-            <ScopeGuard canAccess={role === 'dataPrincipal'} redirectTo={ROLE_HOME_PATH[role]}>
+            <ScopeGuard canAccess={canAccessGrievances} redirectTo={grievancesRedirect}>
               <GrievanceListPage />
             </ScopeGuard>
           }
@@ -121,7 +130,7 @@ function AppRoutes(): React.JSX.Element {
         <Route
           path="/grievances/:id"
           element={
-            <ScopeGuard canAccess={role === 'dataPrincipal'} redirectTo={ROLE_HOME_PATH[role]}>
+            <ScopeGuard canAccess={canAccessGrievances} redirectTo={grievancesRedirect}>
               <GrievanceDetailPage />
             </ScopeGuard>
           }
@@ -129,7 +138,10 @@ function AppRoutes(): React.JSX.Element {
         <Route
           path="/grievance-management"
           element={
-            <ScopeGuard canAccess={role === 'grievanceOfficer'} redirectTo={ROLE_HOME_PATH[role]}>
+            <ScopeGuard
+              canAccess={canAccessGrievanceManagement}
+              redirectTo={grievanceManagementRedirect}
+            >
               <GrievanceQueuePage />
             </ScopeGuard>
           }
@@ -137,7 +149,10 @@ function AppRoutes(): React.JSX.Element {
         <Route
           path="/grievance-management/:id"
           element={
-            <ScopeGuard canAccess={role === 'grievanceOfficer'} redirectTo={ROLE_HOME_PATH[role]}>
+            <ScopeGuard
+              canAccess={canAccessGrievanceManagement}
+              redirectTo={grievanceManagementRedirect}
+            >
               <GrievanceCaseDetailPage />
             </ScopeGuard>
           }
