@@ -24,6 +24,7 @@ const (
 	ScopeElementsWrite     = ScopePrefix + "elements:write"
 	ScopePurposesRead      = ScopePrefix + "purposes:read"
 	ScopePurposesWrite     = ScopePrefix + "purposes:write"
+	ScopeGrievancesManage  = ScopePrefix + "grievances:manage"
 )
 
 // AllPortalScopes lists every canonical portal authorization scope.
@@ -32,6 +33,7 @@ var AllPortalScopes = []string{
 	ScopeConsentsReadAny, ScopeConsentsWriteAny,
 	ScopeElementsRead, ScopeElementsWrite,
 	ScopePurposesRead, ScopePurposesWrite,
+	ScopeGrievancesManage,
 }
 
 type apiScopePolicy struct {
