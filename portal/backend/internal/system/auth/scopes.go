@@ -16,15 +16,17 @@ const (
 	// Set it to an empty string when the identity provider uses unprefixed scopes.
 	ScopePrefix = "portal:"
 
-	ScopeConsentsReadSelf  = ScopePrefix + "consents:read:self"
-	ScopeConsentsWriteSelf = ScopePrefix + "consents:write:self"
-	ScopeConsentsReadAny   = ScopePrefix + "consents:read:any"
-	ScopeConsentsWriteAny  = ScopePrefix + "consents:write:any"
-	ScopeElementsRead      = ScopePrefix + "elements:read"
-	ScopeElementsWrite     = ScopePrefix + "elements:write"
-	ScopePurposesRead      = ScopePrefix + "purposes:read"
-	ScopePurposesWrite     = ScopePrefix + "purposes:write"
-	ScopeGrievancesManage  = ScopePrefix + "grievances:manage"
+	ScopeConsentsReadSelf    = ScopePrefix + "consents:read:self"
+	ScopeConsentsWriteSelf   = ScopePrefix + "consents:write:self"
+	ScopeConsentsReadAny     = ScopePrefix + "consents:read:any"
+	ScopeConsentsWriteAny    = ScopePrefix + "consents:write:any"
+	ScopeElementsRead        = ScopePrefix + "elements:read"
+	ScopeElementsWrite       = ScopePrefix + "elements:write"
+	ScopePurposesRead        = ScopePrefix + "purposes:read"
+	ScopePurposesWrite       = ScopePrefix + "purposes:write"
+	ScopeGrievancesManage    = ScopePrefix + "grievances:manage"
+	ScopeGrievancesReadSelf  = ScopePrefix + "grievances:read:self"
+	ScopeGrievancesWriteSelf = ScopePrefix + "grievances:write:self"
 )
 
 // AllPortalScopes lists every canonical portal authorization scope.
@@ -34,6 +36,7 @@ var AllPortalScopes = []string{
 	ScopeElementsRead, ScopeElementsWrite,
 	ScopePurposesRead, ScopePurposesWrite,
 	ScopeGrievancesManage,
+	ScopeGrievancesReadSelf, ScopeGrievancesWriteSelf,
 }
 
 type apiScopePolicy struct {
